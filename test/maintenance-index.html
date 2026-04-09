@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarChain • Registre Blockchain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a0033);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        
+        .glow-purple {
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+        }
+        
+        .car-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .tab-active {
+            border-bottom: 3px solid #c026d3;
+            color: #c026d3;
+        }
+
+        /* Feature Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), 0 0 40px rgba(168, 85, 247, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(168, 85, 247, 0.5), 0 0 60px rgba(168, 85, 247, 0.2);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .animate-bounce-in {
+            animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #a855f7;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+
+    <!-- HEADER HERO -->
+    <div class="relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-2xl">🚗</div>
+                    <h1 class="text-4xl font-bold neon-text">CarChain</h1>
+                </div>
+                <button id="connectBtn" 
+                        class="flex items-center gap-3 bg-white/10 hover:bg-white/20 transition-all px-8 py-4 rounded-3xl font-medium glow-purple">
+                    <i class="fa-brands fa-ethereum"></i>
+                    <span>Connecter MetaMask</span>
+                </button>
+            </div>
+
+            <div class="text-center mt-12">
+                <h2 class="text-6xl font-bold tracking-tighter neon-text">
+                    Registre Automobile<br>immuable sur Blockchain
+                </h2>
+                <p class="mt-4 text-xl text-purple-300">Historique des véhicules gravé pour toujours • Zéro fraude</p>
+                
+                <!-- Voiture animée -->
+                <div class="car-float mt-8 mx-auto w-96">
+                    <div class="text-9xl">🚘</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 pb-16">
+
+        <!-- TABS -->
+        <div class="flex border-b border-white/10 mb-8">
+            <button id="tabSearch" onclick="switchTab(0)" 
+                    class="tab-active px-8 py-4 text-lg font-medium flex-1 md:flex-none transition-all">🔍 Consulter un véhicule</button>
+            <button id="tabAdd" onclick="switchTab(1)" 
+                    class="px-8 py-4 text-lg font-medium flex-1 md:flex-none transition-all">📝 Enregistrer intervention (Garage)</button>
+        </div>
+
+        <!-- TAB 1 : RECHERCHE -->
+        <div id="contentSearch" class="tab-content">
+            <div class="glass rounded-3xl p-8">
+                <div class="max-w-xl mx-auto">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-semibold">Rechercher l'historique complet</h3>
+                    </div>
+                    <div class="flex gap-4">
+                        <input id="searchMatricule" type="text" placeholder="150 TU 7890" 
+                               class="flex-1 bg-white/10 border border-purple-400/30 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:border-purple-400 placeholder:text-white/40 uppercase">
+                        <button onclick="searchVehicle()" 
+                                class="bg-gradient-to-r from-purple-500 to-pink-500 px-10 rounded-2xl font-semibold text-lg hover:scale-105 transition-transform">
+                            Voir l'historique
+                        </button>
+                    </div>
+                </div>
+
+                <div id="searchResult" class="mt-10"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2 : AJOUT INTERVENTION -->
+        <div id="contentAdd" class="tab-content hidden">
+            <div class="glass rounded-3xl p-8">
+                <h3 class="text-2xl font-semibold mb-6 text-center">Nouvelle intervention - Garage agréé</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm mb-2 text-purple-300">Matricule</label>
+                        <input id="addMatricule" type="text" placeholder="150 TU 7890" 
+                               class="w-full bg-white/10 border border-purple-400/30 rounded-2xl px-6 py-5 text-xl uppercase focus:outline-none focus:border-purple-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2 text-purple-300">Kilométrage (km)</label>
+                        <input id="addKm" type="number" placeholder="65000" 
+                               class="w-full bg-white/10 border border-purple-400/30 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:border-purple-400">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm mb-2 text-purple-300">Type d'intervention</label>
+                    <select id="addType" class="w-full bg-white/10 border border-purple-400/30 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:border-purple-400">
+                        <option value="">Choisir le type...</option>
+                        <option value="Vidange">Vidange</option>
+                        <option value="Révision complète">Révision complète</option>
+                        <option value="Changement courroie">Changement courroie</option>
+                        <option value="Changement pneus">Changement pneus</option>
+                        <option value="Réparation freins">Réparation freins</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+
+                <button onclick="addIntervention()" 
+                        class="mt-10 w-full bg-gradient-to-r from-purple-500 to-pink-500 py-6 rounded-3xl text-2xl font-semibold hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-blockchain"></i>
+                    Enregistrer sur la Blockchain
+                </button>
+
+                <div id="addMessage" class="mt-6 text-center min-h-[50px]"></div>
+            </div>
+        </div>
+
+        <!-- FEATURES SECTION -->
+        <div class="mt-20 pt-12 border-t border-white/10">
+            <h3 class="text-4xl font-bold text-center mb-12 neon-text animate-fade-in-up">Pourquoi CarChain ?</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card rounded-2xl p-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Sécurité maximale</h4>
+                    <p class="text-purple-200">Données immuables et chiffrées sur la blockchain</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card rounded-2xl p-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Traçabilité complète</h4>
+                    <p class="text-purple-200">Historique complet de chaque intervention enregistrée</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card rounded-2xl p-8 animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Transactions rapides</h4>
+                    <p class="text-purple-200">Enregistrement instantané des données sur la blockchain</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation Tailwind
+        function initTailwind() {
+            tailwind.config = {
+                content: [],
+                theme: { extend: {} }
+            }
+        }
+        initTailwind();
+
+        function switchTab(n) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(n === 0 ? 'contentSearch' : 'contentAdd').classList.remove('hidden');
+            
+            document.getElementById('tabSearch').classList.toggle('tab-active', n === 0);
+            document.getElementById('tabAdd').classList.toggle('tab-active', n === 1);
+        }
+
+      async function searchVehicle() {
+    const matricule = document.getElementById('searchMatricule').value.trim().toUpperCase();
+    if (!matricule) return alert("Veuillez entrer une matricule");
+
+    const result = document.getElementById('searchResult');
+
+    try {
+        let data = await getHistory(matricule);
+
+        if (data.length === 0) {
+            result.innerHTML = `<p class="text-center text-red-400">Aucun historique trouvé</p>`;
+            return;
+        }
+
+        let html = `
+        <div class="mt-6 overflow-x-auto">
+        <table class="w-full text-left border border-white/20 rounded-2xl overflow-hidden">
+        <thead class="bg-purple-500/20">
+            <tr>
+                <th class="p-3">Date</th>
+                <th class="p-3">KM</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Garage</th>
+            </tr>
+        </thead>
+        <tbody>
+        `;
+
+        data.forEach(i => {
+            let date = new Date(i.date * 1000).toLocaleString();
+
+            html += `
+            <tr class="border-t border-white/10">
+                <td class="p-3">${date}</td>
+                <td class="p-3">${i.kilometrage}</td>
+                <td class="p-3">${i.typeIntervention}</td>
+                <td class="p-3">${i.garage}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table></div>`;
+
+        result.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        result.innerHTML = `<p class="text-red-400 text-center">Erreur lors de la récupération</p>`;
+    }
+}
+      async function addIntervention() {
+    const mat = document.getElementById('addMatricule').value.trim().toUpperCase();
+    const km = document.getElementById('addKm').value;
+    const type = document.getElementById('addType').value;
+
+    const message = document.getElementById('addMessage');
+
+    if (!mat || !km || !type) {
+        return alert("Remplir tous les champs !");
+    }
+
+    try {
+        message.innerHTML = `<p class="text-yellow-400">Transaction en cours...</p>`;
+
+        await addInterventionBlockchain(mat, km, type);
+
+        message.innerHTML = `
+        <div class="text-green-400 font-semibold">
+            ✅ Intervention ajoutée avec succès !
+        </div>`;
+
+    } catch (err) {
+        console.error(err);
+        message.innerHTML = `<p class="text-red-400">Erreur transaction</p>`;
+    }
+}
+
+        // Connexion MetaMask (animation)
+        document.getElementById('connectBtn').addEventListener('click', () => {
+            const btn = document.getElementById('connectBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Connexion...`;
+            setTimeout(() => {
+                btn.innerHTML = `✅ Connecté • 0x71C4...f3A2`;
+                btn.classList.add('bg-green-500/20', 'text-green-400');
+            }, 1200);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+    <script src="maintenance-app.js"></script>
+</body>
+</html>
